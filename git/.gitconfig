@@ -1,0 +1,22 @@
+[user]
+    name = stephen
+    email = stephen@clobot.co.kr
+
+[core]
+    autocrlf = input
+    editor = vim
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    lg = log --oneline --graph --decorate --all
+    df = diff
+    pu = push
+    pl = pull
+
+[pull]
+    rebase = false
+
+[credential]
+    helper = manager
