@@ -37,9 +37,9 @@ source ~/.bashrc
 
 | alias | 실제 명령 |
 |---|---|
-| `ssh-pdk` | `ssh pdkcld1` |
+| `ssh-pdk` | `ssh monitor-01` |
 | `ssh-vm` | `ssh vm-server-01` |
-| `ssh-gitlab` | `ssh gitlab-srv` |
+| `ssh-gitlab` | `ssh gitlab` |
 | `ssh-gpu` | `ssh gpu-server` |
 | `dc` | `docker compose` |
 | `dps` | docker ps (포맷 정리) |
@@ -53,10 +53,10 @@ source ~/.bashrc
 
 | Host | IP | 비고 |
 |---|---|---|
-| pdkcld1 | 172.19.100.10 | 모니터링 서버, KVM 호스트 |
+| monitor-01 | 172.19.100.10 | 모니터링 서버, KVM 호스트 |
 | vm-server-01 | 172.18.100.20 | Graylog, SonarQube, n8n |
-| gitlab-srv | 172.18.100.21 | GitLab CE |
-| dev-srv | 172.18.100.48 | pdkcld1 2번 NIC |
-| gpu-server | 172.19.100.21 | ProxyJump via pdkcld1 |
+| gitlab | 172.18.100.21 | GitLab CE |
+| dev-srv | 172.18.100.48 | monitor-01 2번 NIC |
+| gpu-server | 172.19.100.21 | ProxyJump via monitor-01 |
 | kvmhost | 192.168.100.247 | — |
 | k8s-incheon-airport | 192.168.100.201 | 인천공항 K8s |
