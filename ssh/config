@@ -1,93 +1,61 @@
-# ============================================================
-# CLOBOT 인프라 SSH Config
-# 방식: PEM 키 + Bastion Host (monitor-01) ProxyJump
-# 키 위치: ~/.ssh/clobot_infra
-# 상세 가이드: https://clobot.atlassian.net/wiki/spaces/II/pages/3873210369/SSH
-# ============================================================
+# =============================================================================
+# SSH Config — Bastion Host + ProxyJump 패턴
+#
+# 사용 방법:
+#   1. ~/.ssh/your_key (PEM 개인키) 준비
+#   2. 이 파일을 ~/.ssh/config 에 복사
+#   3. HostName / IdentityFile 값을 실제 환경으로 교체
+#
+# 상세 가이드: docs/SSH_접근관리_가이드.md
+# =============================================================================
 
-# ── Bastion (monitor-01) ─────────────────────────────────────────────────────
+# ── Bastion Host (모든 내부 서버 경유점) ─────────────────────────────────────
+# 내부망에서는 Internal IP, 외부/VPN 없이는 DMZ/공인 IP 사용
 Host bastion
-    HostName        172.18.100.48
-    User            clobot
-    IdentityFile    ~/.ssh/clobot_infra
+    HostName        192.168.1.10          # [CUSTOMIZE] 모니터링/게이트웨이 서버 Internal IP
+    User            your-user             # [CUSTOMIZE] SSH 계정
+    IdentityFile    ~/.ssh/your_key       # [CUSTOMIZE] PEM 개인키 경로
     StrictHostKeyChecking no
     ServerAliveInterval 60
 
-# 외부(VPN 없이) 접속 시 DMZ IP 사용
-Host bastion-dmz
-    HostName        172.19.100.10
-    User            clobot
-    IdentityFile    ~/.ssh/clobot_infra
+Host bastion-ext
+    HostName        your.external.ip      # [CUSTOMIZE] DMZ 또는 공인 IP (외부 접속용)
+    User            your-user
+    IdentityFile    ~/.ssh/your_key
     StrictHostKeyChecking no
 
-# ── DevOps / Tools ──────────────────────────────────────────────────────────
-Host vm-server-01
-    HostName        172.18.100.20
-    User            clobot
+# ── 내부 서버 (ProxyJump bastion 자동 경유) ───────────────────────────────────
+Host app-server-01
+    HostName        192.168.1.11          # [CUSTOMIZE]
+    User            your-user
     ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
+    IdentityFile    ~/.ssh/your_key
+    StrictHostKeyChecking no
+
+Host app-server-02
+    HostName        192.168.1.12          # [CUSTOMIZE]
+    User            your-user
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/your_key
     StrictHostKeyChecking no
 
 Host gitlab
-    HostName        172.18.100.21
-    User            clobot
+    HostName        192.168.1.20          # [CUSTOMIZE] GitLab 서버 IP
+    User            your-user
     ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
+    IdentityFile    ~/.ssh/your_key
     StrictHostKeyChecking no
 
-Host sonarqube
-    HostName        172.18.100.22
-    User            clobot
+Host db-server
+    HostName        192.168.1.30          # [CUSTOMIZE] DB 서버 IP
+    User            your-user
     ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
+    IdentityFile    ~/.ssh/your_key
     StrictHostKeyChecking no
 
-Host vm-server-02
-    HostName        172.18.100.49
-    User            clobot
-    ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
-    StrictHostKeyChecking no
-
-# ── Team VM (block 120~131) ──────────────────────────────────────────────────
-Host croms-rx-core-dev
-    HostName        172.18.100.122
-    User            clobot
-    ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
-    StrictHostKeyChecking no
-
-Host croms-rx-core-stage
-    HostName        172.18.100.123
-    User            clobot
-    ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
-    StrictHostKeyChecking no
-
-Host k8s-rx-dev-master
-    HostName        172.18.100.124
-    User            clobot
-    ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
-    StrictHostKeyChecking no
-
-Host croms-rx-UXUI
-    HostName        172.18.100.127
-    User            clobot
-    ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
-    StrictHostKeyChecking no
-
-Host croms-core-UXUI
-    HostName        172.18.100.131
-    User            clobot
-    ProxyJump       bastion
-    IdentityFile    ~/.ssh/clobot_infra
-    StrictHostKeyChecking no
-
-# ── 현장 서버 (VPN 경유) ────────────────────────────────────────────────────
-Host prod-croms-rx
-    HostName        10.10.150.119
-    User            clobot
-    IdentityFile    ~/.ssh/clobot_infra
+# ── 현장/VPN 서버 (ProxyJump 없이 직접 접속) ─────────────────────────────────
+Host remote-site
+    HostName        10.0.0.1              # [CUSTOMIZE] VPN 경유 원격 서버 IP
+    User            your-user
+    IdentityFile    ~/.ssh/your_key
     StrictHostKeyChecking no
