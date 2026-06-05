@@ -17,10 +17,17 @@ alias dlog='docker logs --tail=100 -f'
 alias dclean='docker system prune -f && docker volume prune -f'
 alias dstats='docker stats --no-stream'
 
-# ── Prometheus / Grafana ──────────────────────────────────────────────────────
+# ── 서비스 URL 단축 ───────────────────────────────────────────────────────────
+# [CUSTOMIZE] 실제 도메인으로 교체
+alias grafana='echo "https://monitor.your-company.com" && open "https://monitor.your-company.com" 2>/dev/null || xdg-open "https://monitor.your-company.com" 2>/dev/null || true'
+alias graylog='echo "https://graylog.your-company.com"'
+alias nas='echo "https://nas.your-company.com"'
+alias utm='echo "https://utm.your-company.com"'
+
+# ── Prometheus / 모니터링 ─────────────────────────────────────────────────────
 alias prom-reload='ssh bastion "docker kill -s HUP prometheus" && echo "Prometheus reloaded"'
 alias am-reload='ssh bastion "docker kill -s SIGHUP alertmanager" && echo "Alertmanager reloaded"'
-alias grafana-open='echo "http://$(ssh bastion "hostname -I | awk \"{print \$1}\""):3000"'
+alias haproxy-reload='ssh bastion "docker kill -s HUP haproxy" && echo "HAProxy reloaded"'
 
 # ── 인프라 점검 ───────────────────────────────────────────────────────────────
 alias disk-all='for h in bastion app-server-01 app-server-02; do echo "=== $h ==="; ssh $h "df -h | grep -v tmpfs"; done'

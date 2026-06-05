@@ -75,7 +75,12 @@ Host 이름은 aliases.sh의 `ssh-*` 단축키와 일치시켜 사용합니다.
 | `dc` | docker compose 단축 |
 | `dps` | 컨테이너 목록 (포맷 정리) |
 | `dlog` | 컨테이너 로그 tail |
+| `grafana` | Grafana URL 출력 및 열기 |
+| `graylog` | Graylog URL 출력 |
+| `nas` | NAS URL 출력 |
+| `utm` | FortiGate UTM URL 출력 |
 | `prom-reload` | Prometheus 설정 무중단 반영 |
+| `haproxy-reload` | HAProxy 무중단 반영 |
 | `disk-all` | 전체 서버 디스크 현황 일괄 확인 |
 | `mem-all` | 전체 서버 메모리 현황 일괄 확인 |
 | `gs / gl / gp` | git status / log / push |
