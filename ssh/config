@@ -1,64 +1,93 @@
 # ============================================================
-# CLOBOT 인프라 서버
+# CLOBOT 인프라 SSH Config
+# 방식: PEM 키 + Bastion Host (monitor-01) ProxyJump
+# 키 위치: ~/.ssh/clobot_infra
+# 상세 가이드: https://clobot.atlassian.net/wiki/spaces/II/pages/3873210369/SSH
 # ============================================================
 
-Host pdkcld1
-  HostName 172.19.100.10
-  User clobot
-  IdentityFile ~/.ssh/id_rsa
-  IdentitiesOnly yes
-  StrictHostKeyChecking no
-  UserKnownHostsFile NUL
-
-Host vm-server-01
-  HostName 172.18.100.20
-  User clobot
-  IdentityFile ~/.ssh/id_rsa
-  IdentitiesOnly yes
-  StrictHostKeyChecking no
-  UserKnownHostsFile NUL
-
-Host gitlab-srv
-  HostName 172.18.100.21
-  User clobot
-  IdentityFile ~/.ssh/id_rsa
-  IdentitiesOnly yes
-  StrictHostKeyChecking no
-  UserKnownHostsFile NUL
-
-Host dev-srv
-  HostName 172.18.100.48
-  User clobot
-  IdentityFile ~/.ssh/id_rsa
-  IdentitiesOnly yes
-  StrictHostKeyChecking no
-  UserKnownHostsFile NUL
-
-Host gpu-server
-  HostName 172.19.100.21
-  User clobot
-  ProxyJump pdkcld1
-  IdentityFile ~/.ssh/id_rsa
-  IdentitiesOnly yes
-  StrictHostKeyChecking no
-  UserKnownHostsFile NUL
-
-Host 192.168.100.205
-  HostName 192.168.100.205
-  User clobot
-
-Host kvmhost
-  HostName 192.168.100.247
-  User clobot
-  IdentityFile ~/.ssh/id_ed25519
-  IdentitiesOnly yes
-  StrictHostKeyChecking no
-  UserKnownHostsFile NUL
-
-  Host k8s-incheon-airport
-    HostName 192.168.100.201
-    User clobot
-    IdentityFile ~/.ssh/id_ed25519
-    IdentitiesOnly yes
+# ── Bastion (monitor-01) ─────────────────────────────────────────────────────
+Host bastion
+    HostName        172.18.100.48
+    User            clobot
+    IdentityFile    ~/.ssh/clobot_infra
     StrictHostKeyChecking no
-    UserKnownHostsFile NUL
+    ServerAliveInterval 60
+
+# 외부(VPN 없이) 접속 시 DMZ IP 사용
+Host bastion-dmz
+    HostName        172.19.100.10
+    User            clobot
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+# ── DevOps / Tools ──────────────────────────────────────────────────────────
+Host vm-server-01
+    HostName        172.18.100.20
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host gitlab
+    HostName        172.18.100.21
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host sonarqube
+    HostName        172.18.100.22
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host vm-server-02
+    HostName        172.18.100.49
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+# ── Team VM (block 120~131) ──────────────────────────────────────────────────
+Host croms-rx-core-dev
+    HostName        172.18.100.122
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host croms-rx-core-stage
+    HostName        172.18.100.123
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host k8s-rx-dev-master
+    HostName        172.18.100.124
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host croms-rx-UXUI
+    HostName        172.18.100.127
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+Host croms-core-UXUI
+    HostName        172.18.100.131
+    User            clobot
+    ProxyJump       bastion
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
+
+# ── 현장 서버 (VPN 경유) ────────────────────────────────────────────────────
+Host prod-croms-rx
+    HostName        10.10.150.119
+    User            clobot
+    IdentityFile    ~/.ssh/clobot_infra
+    StrictHostKeyChecking no
